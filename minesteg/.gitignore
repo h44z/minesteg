@@ -1,0 +1,32 @@
+# KDE Dolphin
+*.directory
+
+# IntelliJ
+.idea
+
+# VS-CODE
+.vscode
+
+# Gradle
+.gradle
+
+# Eclipse
+.settings
+.project
+
+# Project related
+build
+bin
+out
+projects
+logs
+src/main/java/mcp
+src/main/java/net
+src/main/java/com
+saves
+resourcepacks
+runclient
+run
+src/main/resources/auth.properties
+src/main/resources/auth-sender.properties
+src/main/resources/auth-receiver.properties

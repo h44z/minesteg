@@ -1,0 +1,68 @@
+// to re-download all files: rm -rf $HOME/.gradle/caches/
+buildscript {
+    repositories {
+        maven { url = 'http://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    // versions can be found here: https://files.minecraftforge.net/maven/net/minecraftforge/gradle/ForgeGradle/
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+    }
+}
+
+apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+// versions found in https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_config/index_1.14.3.html
+project(':mcp') {
+    apply plugin: 'net.minecraftforge.gradle.mcp'
+    mcp {
+        config = '1.14.4-20190719.225934'
+        pipeline = 'server'
+    }
+}
+
+evaluationDependsOn(':mcp')
+
+apply plugin: 'net.minecraftforge.gradle.patcher'
+
+// versions found in https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_snapshot/
+patcher {
+    parent = project(':mcp')
+    patchedSrc = file('src/main/java')
+    mappings channel: 'snapshot', version: '20190816-1.14.3'
+    mcVersion = '1.14.4'
+}
+
+
+task setup(dependsOn: [':extractMapped']) {
+    group = "mcserver"
+    description = "Setups the dev workspace"
+    mkdir 'run'
+    copy {
+        from 'serverdata'
+        into 'run'
+    }
+}
+
+task runserver(type: JavaExec, dependsOn: ['downloadAssets', 'extractNatives']) {
+    group = "mcserver"
+    description = "Runs the server"
+
+    classpath sourceSets.main.runtimeClasspath
+
+    args = []
+
+    main 'net.minecraft.server.dedicated.DedicatedServer'
+    workingDir 'run'
+
+    //jvmArgs = ["-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"]
+}
+

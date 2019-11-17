@@ -1,0 +1,88 @@
+[
+  {
+    "rawCode": "session = at.ac.uibk.chaas.minesteg.MinecraftAuth.getAuthSession(session);",
+    "destinationMethodName": "net.minecraft.client.main.Main.main",
+    "destinationMethodArgTypes": [
+      "[Ljava.lang.String;"
+    ],
+    "destinationLineNumber": 73,
+    "arguments": {
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.steg.Encoder.init",
+    "destinationMethodName": "net.minecraft.client.Minecraft.init",
+    "destinationMethodArgTypes": [
+    ],
+    "destinationLineNumber": 0,
+    "arguments": {
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.steg.Decoder.init",
+    "destinationMethodName": "net.minecraft.client.Minecraft.init",
+    "destinationMethodArgTypes": [
+    ],
+    "destinationLineNumber": 0,
+    "arguments": {
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.ClientInfoPrinter.printClientInfo",
+    "destinationMethodName": "net.minecraft.client.gui.GuiOverlayDebug.call",
+    "destinationMethodArgTypes": [
+    ],
+    "destinationLineNumber": 42,
+    "arguments": {
+      "list": "java.util.List"
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.net.PacketSniffer.logOutgoingPacket",
+    "destinationMethodName": "net.minecraft.network.NetworkManager.sendPacket",
+    "destinationMethodArgTypes": [
+      "net.minecraft.network.Packet",
+      "io.netty.util.concurrent.GenericFutureListener"
+    ],
+    "destinationLineNumber": 0,
+    "arguments": {
+      "packetIn": "net.minecraft.network.Packet"
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.steg.Encoder.tick",
+    "destinationMethodName": "net.minecraft.network.NetworkManager.sendPacket",
+    "destinationMethodArgTypes": [
+      "net.minecraft.network.Packet",
+      "io.netty.util.concurrent.GenericFutureListener"
+    ],
+    "destinationLineNumber": 0,
+    "arguments": {
+      "packetIn": "net.minecraft.network.Packet"
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.net.PacketSniffer.logIncomingPacket",
+    "destinationMethodName": "net.minecraft.network.NetworkManager.channelRead0",
+    "destinationMethodArgTypes": [
+      "io.netty.channel.ChannelHandlerContext",
+      "net.minecraft.network.Packet"
+    ],
+    "destinationLineNumber": 1,
+    "arguments": {
+      "p_channelRead0_2_": "net.minecraft.network.Packet"
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.steg.Decoder.tick",
+    "destinationMethodName": "net.minecraft.network.NetworkManager.channelRead0",
+    "destinationMethodArgTypes": [
+      "io.netty.channel.ChannelHandlerContext",
+      "net.minecraft.network.Packet"
+    ],
+    "destinationLineNumber": 1,
+    "arguments": {
+      "p_channelRead0_2_": "net.minecraft.network.Packet"
+    }
+  }
+]

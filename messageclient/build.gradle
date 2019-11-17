@@ -1,0 +1,29 @@
+group 'at.ac.uibk.chaas'
+version '1.0.0'
+
+apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    compile group: 'info.picocli', name: 'picocli', version: '4.0.1'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+            'Main-Class': 'at.ac.uibk.chaas.messageclient.MessageClient'
+        )
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "rawCode": "session = at.ac.uibk.chaas.minesteg.MinecraftAuth.getAuthSession(session);",
+    "destinationMethodName": "net.minecraft.client.main.Main.main",
+    "destinationMethodArgTypes": [
+      "[Ljava.lang.String;"
+    ],
+    "destinationLineNumber": 73,
+    "arguments": {
+    }
+  },
+  {
+    "rawCode": "at.ac.uibk.chaas.minesteg.StegoSystem.getInstance().startup();",
+    "destinationMethodName": "net.minecraft.client.Minecraft.init",
+    "destinationMethodArgTypes": [
+    ],
+    "destinationLineNumber": 0,
+    "arguments": {
+      "list": "java.util.List"
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.ClientInfoPrinter.printClientInfo",
+    "destinationMethodName": "net.minecraft.client.gui.overlay.DebugOverlayGui.call",
+    "destinationMethodArgTypes": [
+    ],
+    "destinationLineNumber": 44,
+    "arguments": {
+      "list": "java.util.List"
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.steg.PacketHandler.send",
+    "destinationMethodName": "net.minecraft.network.NetworkManager.sendPacket",
+    "destinationMethodArgTypes": [
+      "net.minecraft.network.IPacket",
+      "io.netty.util.concurrent.GenericFutureListener"
+    ],
+    "destinationLineNumber": 0,
+    "arguments": {
+      "packetIn": "net.minecraft.network.IPacket"
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.steg.PacketHandler.receive",
+    "destinationMethodName": "net.minecraft.network.NetworkManager.channelRead0",
+    "destinationMethodArgTypes": [
+      "io.netty.channel.ChannelHandlerContext",
+      "net.minecraft.network.IPacket"
+    ],
+    "destinationLineNumber": 1,
+    "arguments": {
+      "p_channelRead0_2_": "net.minecraft.network.IPacket"
+    }
+  }
+]

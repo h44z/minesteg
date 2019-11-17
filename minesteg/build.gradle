@@ -1,0 +1,198 @@
+// to re-download all files: rm -rf $HOME/.gradle/caches/
+buildscript {
+    repositories {
+        maven { url = 'http://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    // versions can be found here: https://files.minecraftforge.net/maven/net/minecraftforge/gradle/ForgeGradle/
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+    }
+}
+
+apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+// set build type by adding -PbuildType=sender/receiver to the gradle call
+if (project.hasProperty("buildType")) {
+    ext.buildType = buildType // set to -P property
+} else {
+    ext.buildType = "sender"
+}
+
+// versions found in https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_config/index_1.14.3.html
+project(':mcp') {
+    apply plugin: 'net.minecraftforge.gradle.mcp'
+    mcp {
+        config = '1.14.4-20190719.225934'
+        pipeline = 'client'
+    }
+}
+
+evaluationDependsOn(':mcp')
+
+apply plugin: 'net.minecraftforge.gradle.patcher'
+
+// versions found in https://files.minecraftforge.net/maven/de/oceanlabs/mcp/mcp_snapshot/
+patcher {
+    parent = project(':mcp')
+    patchedSrc = file('src/main/java')
+    mappings channel: 'snapshot', version: '20190816-1.14.3'
+    mcVersion = '1.14.4'
+}
+
+task runclient(type: JavaExec, dependsOn: ['downloadAssets', 'extractNatives']) {
+    group = "minesteg"
+    description = "Runs the client"
+    doFirst {
+        mkdir 'runclient'
+    }
+    classpath sourceSets.main.runtimeClasspath
+
+    args = ['--accessToken', '0',
+            '--version', '1.14.4',
+            '--assetIndex', '1.14',
+            '--assetsDir', downloadAssets.output,
+            '--nativesDirectory', extractNatives.output,
+            '--buildType', buildType]
+
+    main 'at.ac.uibk.chaas.minesteg.IdeLauncher'
+    workingDir 'runclient'
+
+    //jvmArgs = ["-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"]
+}
+
+task setup(dependsOn: [':extractMapped']) {
+    group = "minesteg"
+    description = "Setups the dev workspace"
+    mkdir 'run/assets'
+    copy {
+        from downloadAssets.output.path
+        into 'run/assets'
+    }
+}
+
+task applyHooks(type: JavaExec) {
+    group = "minesteg"
+    description = "Insert all hooks into the Minecraft source"
+    classpath sourceSets.main.runtimeClasspath
+    main 'at.ac.uibk.chaas.minesteg.hooks.HookInjector'
+}
+
+task buildReleaseJar(type: Jar, dependsOn: ['build']) {
+    group = "minesteg_internal"
+
+    description = "Build a runable jar file including the minecraft resources."
+
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.DSA"
+    exclude "META-INF/*.RSA"
+    exclude "auth.properties"
+    exclude "auth.properties.example"
+    exclude "auth-sender.properties"
+    exclude "auth-receiver.properties"
+    exclude "patch_map.json"
+    exclude "minesteg.json"
+    exclude "minesteg.properties"
+    exclude "minesteg-sender.properties"
+    exclude "minesteg-receiver.properties"
+
+    manifest {
+        attributes 'Main-Class': 'at.ac.uibk.chaas.minesteg.StandaloneLauncher'
+    }
+
+    baseName = 'minesteg'
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+    destinationDir = file('build/dist/jar')
+}
+
+task buildMinestegJar(type: Jar, dependsOn: ['buildReleaseJar']) {
+    group = "minesteg_internal"
+    description = "Build a runable jar file including the minecraft resources and the minesteg config."
+
+    from zipTree("build/dist/jar/minesteg-${project.version}.jar")
+    from("src/main/resources/minesteg-${buildType}.properties") {
+        rename { filename -> filename.replace "-${buildType}.properties", '.properties' }
+    }
+    from("src/main/resources/auth-${buildType}.properties") {
+        rename { filename -> filename.replace "-${buildType}.properties", '.properties' }
+    }
+
+    manifest {
+        attributes 'Main-Class': 'at.ac.uibk.chaas.minesteg.StandaloneLauncher'
+    }
+
+    baseName = "minesteg-${buildType}"
+    destinationDir = file('build/dist/jar')
+    outputs.upToDateWhen { false } // always rebuild
+}
+
+task buildLauncherFolder(type: Copy, dependsOn: ['buildMinestegJar']) {
+    group = "minesteg_internal"
+    description = "Create the launcher version folder."
+
+    from(buildMinestegJar.outputs.files) {
+        include "minesteg-${buildType}*.jar"
+        rename { String fileName ->
+            // a simple way is to remove the "-$version" from the jar filename
+            // but you can customize the filename replacement rule as you wish.
+            fileName.replace("-$project.version", "")
+        }
+
+    }
+    from(processResources.outputs.files) {
+        include 'minesteg.json'
+    }
+    from("minesteg_configs") {
+        include "${buildType}/**"
+    }
+    from(".") {
+        include "testscripts/**"
+    }
+
+    into "build/dist/launcher/${buildType}/minesteg"
+
+    //rename "minesteg-sender-1.0.0.jar" to "minesteg.jar"
+    rename { String fileName ->
+        fileName.replace("-${buildType}-$project.version", "")
+    }
+}
+
+task zipLauncherFolder(type: Zip, dependsOn: ['buildLauncherFolder']) {
+    group = "minesteg"
+    description = "Create the launcher version zip."
+
+    println "Using buildType: ${buildType}"
+
+    from "build/dist/launcher/${buildType}"
+    include 'minesteg/**'
+
+    archiveName "minesteg-${buildType}-${project.version}.zip"
+    destinationDir = file("build/dist/launcher")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
+
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.3'
+    compile group: 'net.minecraftforge', name: 'forgespi', version: '0.13.0'
+    compile project(":messageclient")
+}
+

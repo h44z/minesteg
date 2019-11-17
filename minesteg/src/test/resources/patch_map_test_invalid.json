@@ -1,0 +1,41 @@
+[
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.hooks.TestClass.invalidSourceMethod",
+    "destinationMethodName": "at.ac.uibk.chaas.minesteg.hooks.HookEntryTestForPatching.testMethod4",
+    "destinationMethodArgTypes": [],
+    "destinationLineNumber": 15,
+    "arguments": {
+      "this.var1": "int",
+      "aVar2": "int"
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.hooks.TestClass.printHelloWithArgs2",
+    "destinationMethodName": "at.ac.uibk.chaas.minesteg.hooks.HookEntryTestForPatching.invalidDestMethod",
+    "destinationMethodArgTypes": [],
+    "destinationLineNumber": 15,
+    "arguments": {
+      "this.var1": "int",
+      "aVar2": "int"
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.hooks.TestClass.printHelloWithArgs2",
+    "destinationMethodName": "at.ac.uibk.chaas.minesteg.hooks.HookEntryTestForPatching.testMethod4",
+    "destinationMethodArgTypes": [],
+    "destinationLineNumber": 15,
+    "arguments": {
+      "this.var1": "boolean",
+      "aVar2": "int"
+    }
+  },
+  {
+    "sourceMethodName": "at.ac.uibk.chaas.minesteg.hooks.TestClass.printHelloWithArgs2",
+    "destinationMethodName": "at.ac.uibk.chaas.minesteg.hooks.HookEntryTestForPatching.testMethod4",
+    "destinationMethodArgTypes": [],
+    "destinationLineNumber": 15,
+    "arguments": {
+      "aVar2": "int"
+    }
+  }
+]

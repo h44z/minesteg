@@ -1,0 +1,8 @@
+rootProject.name = 'minesteg'
+
+include ':mcp'
+project(":mcp").projectDir = file("projects/mcp")
+
+
+include ":messageclient"
+project(":messageclient").projectDir = new File("../messageclient")
